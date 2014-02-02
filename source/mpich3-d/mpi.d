@@ -2,10 +2,6 @@ import core.stdc.config;
 
 extern (C):
 
-alias int MPI_Datatype;
-alias int MPI_Comm;
-alias int MPI_Group;
-alias int MPI_Win;
 alias ADIOI_FileD* MPI_File;
 alias int MPI_Op;
 alias MPIR_Win_flavor MPIR_Win_flavor_t;
@@ -47,14 +43,285 @@ alias <unimplemented> MPIX_Grequest_poll_function;
 alias <unimplemented> MPIX_Grequest_wait_function;
 alias <unimplemented> MPI_Datarep_conversion_function;
 alias <unimplemented> MPI_Datarep_extent_function;
-alias int MPIX_Grequest_class;
-alias mpixi_mutex_s* MPIX_Mutex;
 
 extern __gshared int* MPI_UNWEIGHTED;
 extern __gshared int* MPI_WEIGHTS_EMPTY;
 extern __gshared MPIR_T_pvar_handle* MPI_T_PVAR_ALL_HANDLES;
 extern __gshared MPI_Fint* MPI_F_STATUS_IGNORE;
 extern __gshared MPI_Fint* MPI_F_STATUSES_IGNORE;
+
+/* TODO: what's this? */
+// #ifndef MPI_INCLUDED
+// #define MPI_INCLUDED
+
+// /* user include file for MPI programs */
+
+// /* Keep C++ compilers from getting confused */
+// #if defined(__cplusplus)
+// extern "C" {
+// #endif
+
+// #undef MPICH_DEFINE_ATTR_TYPE_TYPES
+// #if defined(__has_attribute)
+// #  if __has_attribute(pointer_with_type_tag) && \
+//       __has_attribute(type_tag_for_datatype) && \
+//       !defined(MPICH_NO_ATTR_TYPE_TAGS)
+// #    define MPICH_DEFINE_ATTR_TYPE_TYPES 1
+// #    define MPICH_ATTR_POINTER_WITH_TYPE_TAG(buffer_idx, type_idx)  __attribute__((pointer_with_type_tag(MPI,buffer_idx,type_idx)))
+// #    define MPICH_ATTR_TYPE_TAG(type)                               __attribute__((type_tag_for_datatype(MPI,type)))
+// #    define MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(type)             __attribute__((type_tag_for_datatype(MPI,type,layout_compatible)))
+// #    define MPICH_ATTR_TYPE_TAG_MUST_BE_NULL()                      __attribute__((type_tag_for_datatype(MPI,void,must_be_null)))
+// #    include <stddef.h>
+// #  endif
+// #endif
+
+// #if !defined(MPICH_ATTR_POINTER_WITH_TYPE_TAG)
+// #  define MPICH_ATTR_POINTER_WITH_TYPE_TAG(buffer_idx, type_idx)
+// #  define MPICH_ATTR_TYPE_TAG(type)
+// #  define MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(type)
+// #  define MPICH_ATTR_TYPE_TAG_MUST_BE_NULL()
+// #endif
+
+// #if !defined(INT8_C)
+// /* stdint.h was not included, see if we can get it */
+// #  if defined(__cplusplus)
+// #    if __cplusplus >= 201103
+// #      include <cstdint>
+// #    endif
+// #  endif
+// #endif
+
+// #if !defined(INT8_C)
+// /* stdint.h was not included, see if we can get it */
+// #  if defined(__STDC_VERSION__)
+// #    if __STDC_VERSION__ >= 199901
+// #      include <stdint.h>
+// #    endif
+// #  endif
+// #endif
+
+// #if defined(INT8_C)
+// /* stdint.h was included, so we can annotate these types */
+// #  define MPICH_ATTR_TYPE_TAG_STDINT(type) MPICH_ATTR_TYPE_TAG(type)
+// #else
+// #  define MPICH_ATTR_TYPE_TAG_STDINT(type)
+// #endif
+
+// #ifdef __STDC_VERSION__ 
+// #if __STDC_VERSION__ >= 199901
+// #  define MPICH_ATTR_TYPE_TAG_C99(type) MPICH_ATTR_TYPE_TAG(type)
+// #else
+// #  define MPICH_ATTR_TYPE_TAG_C99(type)
+// #endif
+// #else 
+// #  define MPICH_ATTR_TYPE_TAG_C99(type)
+// #endif
+
+// #if defined(__cplusplus)
+// #  define MPICH_ATTR_TYPE_TAG_CXX(type) MPICH_ATTR_TYPE_TAG(type)
+// #else
+// #  define MPICH_ATTR_TYPE_TAG_CXX(type)
+// #endif
+
+/* Define some null objects */
+const MPI_Comm MPI_COMM_NULL              = cast(MPI_Comm) 0x04000000;
+const MPI_Op MPI_OP_NULL                  = cast(MPI_op) 0x18000000;
+const MPI_Group MPI_GROUP_NULL            = cast(MPI_Group) 0x08000000;
+const MPI_Datatype MPI_DATATYPE_NULL      = cast(MPI_Datatype) 0x0c000000;
+const MPI_Request MPI_REQUEST_NULL        = cast(MPI_Request) 0x2c000000;
+const MPI_Errhandler MPI_ERRHANDLER_NULL  = cast(MPI_Errhandler) 0x14000000;
+const MPI_Message MPI_MESSAGE_NULL        = cast(MPI_Message) MPI_REQUEST_NULL;
+const MPI_Message MPI_MESSAGE_NO_PROC     = cast(MPI_Message) 0x6c000000;
+
+/* Results of the compare operations. */
+const int MPI_IDENT     = 0;
+const int MPI_CONGRUENT = 1;
+const int MPI_SIMILAR   = 2;
+const int MPI_UNEQUAL   = 3;
+
+alias int MPI_Datatype;
+const MPI_Datatype MPI_CHAR               = cast(MPI_Datatype) 0x4c000101;
+const MPI_Datatype MPI_SIGNED_CHAR        = cast(MPI_Datatype) 0x4c000118;
+const MPI_Datatype MPI_UNSIGNED_CHAR      = cast(MPI_Datatype) 0x4c000102;
+const MPI_Datatype MPI_BYTE               = cast(MPI_Datatype) 0x4c00010d;
+const MPI_Datatype MPI_WCHAR              = cast(MPI_Datatype) 0x4c00040e;
+const MPI_Datatype MPI_SHORT              = cast(MPI_Datatype) 0x4c000203;
+const MPI_Datatype MPI_UNSIGNED_SHORT     = cast(MPI_Datatype) 0x4c000204;
+const MPI_Datatype MPI_INT                = cast(MPI_Datatype) 0x4c000405;
+const MPI_Datatype MPI_UNSIGNED           = cast(MPI_Datatype) 0x4c000406;
+const MPI_Datatype MPI_LONG               = cast(MPI_Datatype) 0x4c000807;
+const MPI_Datatype MPI_UNSIGNED_LONG      = cast(MPI_Datatype) 0x4c000808;
+const MPI_Datatype MPI_FLOAT              = cast(MPI_Datatype) 0x4c00040a;
+const MPI_Datatype MPI_DOUBLE             = cast(MPI_Datatype) 0x4c00080b;
+const MPI_Datatype MPI_LONG_DOUBLE        = cast(MPI_Datatype) 0x4c00100c;
+const MPI_Datatype MPI_LONG_LONG_INT      = cast(MPI_Datatype) 0x4c000809;
+const MPI_Datatype MPI_UNSIGNED_LONG_LONG = cast(MPI_Datatype) 0x4c000819;
+const MPI_Datatype MPI_LONG_LONG          = MPI_LONG_LONG_INT;
+
+/* TODO: what's this? */
+// #ifdef MPICH_DEFINE_ATTR_TYPE_TYPES
+// static const MPI_Datatype mpich_mpi_char               MPICH_ATTR_TYPE_TAG(char)               = MPI_CHAR;
+// static const MPI_Datatype mpich_mpi_signed_char        MPICH_ATTR_TYPE_TAG(signed char)        = MPI_SIGNED_CHAR;
+// static const MPI_Datatype mpich_mpi_unsigned_char      MPICH_ATTR_TYPE_TAG(unsigned char)      = MPI_UNSIGNED_CHAR;
+// /*static const MPI_Datatype mpich_mpi_byte               MPICH_ATTR_TYPE_TAG(char)               = MPI_BYTE;*/
+// static const MPI_Datatype mpich_mpi_wchar              MPICH_ATTR_TYPE_TAG(wchar_t)            = MPI_WCHAR;
+// static const MPI_Datatype mpich_mpi_short              MPICH_ATTR_TYPE_TAG(short)              = MPI_SHORT;
+// static const MPI_Datatype mpich_mpi_unsigned_short     MPICH_ATTR_TYPE_TAG(unsigned short)     = MPI_UNSIGNED_SHORT;
+// static const MPI_Datatype mpich_mpi_int                MPICH_ATTR_TYPE_TAG(int)                = MPI_INT;
+// static const MPI_Datatype mpich_mpi_unsigned           MPICH_ATTR_TYPE_TAG(unsigned)           = MPI_UNSIGNED;
+// static const MPI_Datatype mpich_mpi_long               MPICH_ATTR_TYPE_TAG(long)               = MPI_LONG;
+// static const MPI_Datatype mpich_mpi_unsigned_long      MPICH_ATTR_TYPE_TAG(unsigned long)      = MPI_UNSIGNED_LONG;
+// static const MPI_Datatype mpich_mpi_float              MPICH_ATTR_TYPE_TAG(float)              = MPI_FLOAT;
+// static const MPI_Datatype mpich_mpi_double             MPICH_ATTR_TYPE_TAG(double)             = MPI_DOUBLE;
+// #if 0x4c00100c != 0x0c000000
+// static const MPI_Datatype mpich_mpi_long_double        MPICH_ATTR_TYPE_TAG(long double)        = MPI_LONG_DOUBLE;
+// #endif
+// static const MPI_Datatype mpich_mpi_long_long_int      MPICH_ATTR_TYPE_TAG(long long int)      = MPI_LONG_LONG_INT;
+// static const MPI_Datatype mpich_mpi_unsigned_long_long MPICH_ATTR_TYPE_TAG(unsigned long long) = MPI_UNSIGNED_LONG_LONG;
+// #endif
+
+const MPI_Datatype MPI_PACKED             = cast(MPI_Datatype) 0x4c00010f;
+const MPI_Datatype MPI_LB                 = cast(MPI_Datatype) 0x4c000010;
+const MPI_Datatype MPI_UB                 = cast(MPI_Datatype) 0x4c000011;
+
+/* 
+   The layouts for the types MPI_DOUBLE_INT etc are simply
+   struct { 
+       double var;
+       int    loc;
+   }
+   This is documented in the man pages on the various datatypes.   
+ */
+const MPI_Datatype MPI_FLOAT_INT          = cast(MPI_Datatype) 0x8c000000;
+const MPI_Datatype MPI_DOUBLE_INT         = cast(MPI_Datatype) 0x8c000001;
+const MPI_Datatype MPI_LONG_INT           = cast(MPI_Datatype) 0x8c000002;
+const MPI_Datatype MPI_SHORT_INT          = cast(MPI_Datatype) 0x8c000003;
+const MPI_Datatype MPI_2INT               = cast(MPI_Datatype) 0x4c000816;
+const MPI_Datatype MPI_LONG_DOUBLE_INT    = cast(MPI_Datatype) 0x8c000004;
+
+/* TODO: what's this? */
+// #ifdef MPICH_DEFINE_ATTR_TYPE_TYPES
+// struct mpich_struct_mpi_float_int       { float f; int i; };
+// struct mpich_struct_mpi_double_int      { double d; int i; };
+// struct mpich_struct_mpi_long_int        { long l; int i; };
+// struct mpich_struct_mpi_short_int       { short s; int i; };
+// struct mpich_struct_mpi_2int            { int i1; int i2; };
+// #if 0x8c000004 != 0x0c000000
+// struct mpich_struct_mpi_long_double_int { long double ld; int i; };
+// #endif
+
+// static const MPI_Datatype mpich_mpi_float_int       MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(struct mpich_struct_mpi_float_int)       = MPI_FLOAT_INT;
+// static const MPI_Datatype mpich_mpi_double_int      MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(struct mpich_struct_mpi_double_int)      = MPI_DOUBLE_INT;
+// static const MPI_Datatype mpich_mpi_long_int        MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(struct mpich_struct_mpi_long_int)        = MPI_LONG_INT;
+// static const MPI_Datatype mpich_mpi_short_int       MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(struct mpich_struct_mpi_short_int)       = MPI_SHORT_INT;
+// static const MPI_Datatype mpich_mpi_2int            MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(struct mpich_struct_mpi_2int)            = MPI_2INT;
+// #if 0x8c000004 != 0x0c000000
+// static const MPI_Datatype mpich_mpi_long_double_int MPICH_ATTR_TYPE_TAG_LAYOUT_COMPATIBLE(struct mpich_struct_mpi_long_double_int) = MPI_LONG_DOUBLE_INT;
+// #endif
+// #endif
+
+/* Fortran types */
+const MPI_Datatype MPI_COMPLEX           = cast(MPI_Datatype) 1275070494;
+const MPI_Datatype MPI_DOUBLE_COMPLEX    = cast(MPI_Datatype) 1275072546;
+const MPI_Datatype MPI_LOGICAL           = cast(MPI_Datatype) 1275069469;
+const MPI_Datatype MPI_REAL              = cast(MPI_Datatype) 1275069468;
+const MPI_Datatype MPI_DOUBLE_PRECISION  = cast(MPI_Datatype) 1275070495;
+const MPI_Datatype MPI_INTEGER           = cast(MPI_Datatype) 1275069467;
+const MPI_Datatype MPI_2INTEGER          = cast(MPI_Datatype) 1275070496;
+
+/* 
+ * MPI_2COMPLEX and MPI_2DOUBLE_COMPLEX were defined by accident in 
+ * MPI 1.0 and removed in MPI 1.1.  
+ *
+ * This definition provides backward compatibility.  These definitions
+ * will be removed in a subsequent MPICH release
+ */
+const MPI_Datatype MPI_2COMPLEX          = cast(MPI_Datatype) 1275072548;
+const MPI_Datatype MPI_2DOUBLE_COMPLEX   = cast(MPI_Datatype) 1275076645;
+const MPI_Datatype MPI_2REAL             = cast(MPI_Datatype) 1275070497;
+const MPI_Datatype MPI_2DOUBLE_PRECISION = cast(MPI_Datatype) 1275072547;
+const MPI_Datatype MPI_CHARACTER         = cast(MPI_Datatype) 1275068698;
+
+/* Size-specific types (see MPI-2, 10.2.5) */
+const MPI_Datatype MPI_REAL4             = cast(MPI_Datatype) 0x4c000427;
+const MPI_Datatype MPI_REAL8             = cast(MPI_Datatype) 0x4c000829;
+const MPI_Datatype MPI_REAL16            = cast(MPI_Datatype) 0x4c00102b;
+const MPI_Datatype MPI_COMPLEX8          = cast(MPI_Datatype) 0x4c000828;
+const MPI_Datatype MPI_COMPLEX16         = cast(MPI_Datatype) 0x4c00102a;
+const MPI_Datatype MPI_COMPLEX32         = cast(MPI_Datatype) 0x4c00202c;
+const MPI_Datatype MPI_INTEGER1          = cast(MPI_Datatype) 0x4c00012d;
+const MPI_Datatype MPI_INTEGER2          = cast(MPI_Datatype) 0x4c00022f;
+const MPI_Datatype MPI_INTEGER4          = cast(MPI_Datatype) 0x4c000430;
+const MPI_Datatype MPI_INTEGER8          = cast(MPI_Datatype) 0x4c000831;
+const MPI_Datatype MPI_INTEGER16         = cast(MPI_Datatype) MPI_DATATYPE_NULL;
+
+/* C99 fixed-width datatypes */
+const MPI_Datatype MPI_INT8_T            = cast(MPI_Datatype) 0x4c000137;
+const MPI_Datatype MPI_INT16_T           = cast(MPI_Datatype) 0x4c000238;
+const MPI_Datatype MPI_INT32_T           = cast(MPI_Datatype) 0x4c000439;
+const MPI_Datatype MPI_INT64_T           = cast(MPI_Datatype) 0x4c00083a;
+const MPI_Datatype MPI_UINT8_T           = cast(MPI_Datatype) 0x4c00013b;
+const MPI_Datatype MPI_UINT16_T          = cast(MPI_Datatype) 0x4c00023c;
+const MPI_Datatype MPI_UINT32_T          = cast(MPI_Datatype) 0x4c00043d;
+const MPI_Datatype MPI_UINT64_T          = cast(MPI_Datatype) 0x4c00083e;
+
+/* TODO: what's this? */
+// #ifdef MPICH_DEFINE_ATTR_TYPE_TYPES
+// static const MPI_Datatype mpich_mpi_int8_t   MPICH_ATTR_TYPE_TAG_STDINT(int8_t)   = MPI_INT8_T;
+// static const MPI_Datatype mpich_mpi_int16_t  MPICH_ATTR_TYPE_TAG_STDINT(int16_t)  = MPI_INT16_T;
+// static const MPI_Datatype mpich_mpi_int32_t  MPICH_ATTR_TYPE_TAG_STDINT(int32_t)  = MPI_INT32_T;
+// static const MPI_Datatype mpich_mpi_int64_t  MPICH_ATTR_TYPE_TAG_STDINT(int64_t)  = MPI_INT64_T;
+// static const MPI_Datatype mpich_mpi_uint8_t  MPICH_ATTR_TYPE_TAG_STDINT(uint8_t)  = MPI_UINT8_T;
+// static const MPI_Datatype mpich_mpi_uint16_t MPICH_ATTR_TYPE_TAG_STDINT(uint16_t) = MPI_UINT16_T;
+// static const MPI_Datatype mpich_mpi_uint32_t MPICH_ATTR_TYPE_TAG_STDINT(uint32_t) = MPI_UINT32_T;
+// static const MPI_Datatype mpich_mpi_uint64_t MPICH_ATTR_TYPE_TAG_STDINT(uint64_t) = MPI_UINT64_T;
+// #endif
+
+/* other C99 types */
+const MPI_Datatype MPI_C_BOOL           = cast(MPI_Datatype) 0x4c00013f;
+const MPI_Datatype MPI_C_FLOAT_COMPLEX  = cast(MPI_Datatype) 0x4c000840;
+const MPI_Datatype MPI_C_COMPLEX        = MPI_C_FLOAT_COMPLEX;
+const MPI_Datatype MPI_C_DOUBLE_COMPLEX = cast(MPI_Datatype) 0x4c001041;
+const MPI_Datatype MPI_C_LONG_DOUBLE_COMPLEX = cast(MPI_Datatype) 0x4c002042;
+
+/* TODO: what's this? */
+// #ifdef MPICH_DEFINE_ATTR_TYPE_TYPES
+// static const MPI_Datatype mpich_mpi_c_bool                MPICH_ATTR_TYPE_TAG_C99(_Bool)           = MPI_C_BOOL;
+// static const MPI_Datatype mpich_mpi_c_float_complex       MPICH_ATTR_TYPE_TAG_C99(float _Complex)  = MPI_C_FLOAT_COMPLEX;
+// static const MPI_Datatype mpich_mpi_c_double_complex      MPICH_ATTR_TYPE_TAG_C99(double _Complex) = MPI_C_DOUBLE_COMPLEX;
+// #if 0x4c002042 != 0x0c000000
+// static const MPI_Datatype mpich_mpi_c_long_double_complex MPICH_ATTR_TYPE_TAG_C99(long double _Complex) = MPI_C_LONG_DOUBLE_COMPLEX;
+// #endif
+// #endif
+
+/* address/offset types */
+const MPI_Datatype MPI_AINT             = cast(MPI_Datatype) 0x4c000843;
+const MPI_Datatype MPI_OFFSET           = cast(MPI_Datatype) 0x4c000844;
+const MPI_Datatype MPI_COUNT            = cast(MPI_Datatype) 0x4c000845;
+
+/* MPI-3 C++ types */
+const MPI_Datatype MPI_CXX_BOOL                = cast(MPI_Datatype) 0x4c000133;
+const MPI_Datatype MPI_CXX_FLOAT_COMPLEX       = cast(MPI_Datatype) 0x4c000834;
+const MPI_Datatype MPI_CXX_DOUBLE_COMPLEX      = cast(MPI_Datatype) 0x4c001035;
+const MPI_Datatype MPI_CXX_LONG_DOUBLE_COMPLEX = cast(MPI_Datatype) 0x4c002036;
+
+/* typeclasses */
+const int MPI_TYPECLASS_REAL    = 1;
+const int MPI_TYPECLASS_INTEGER = 2;
+const int MPI_TYPECLASS_COMPLEX = 3;
+
+/* Communicators */
+alias int MPI_Comm;
+const MPI_Comm MPI_COMM_WORLD = cast(MPI_Comm) 0x44000000;
+const MPI_Comm MPI_COMM_SELF  = cast(MPI_Comm) 0x44000001;
+
+/* Groups */
+alias int MPI_Group;
+const MPI_Group MPI_GROUP_EMPTY = cast(MPI_Group) 0x48000000;
+
+/* RMA and Windows */
+alias int MPI_Win;
+const MPI_Win MPI_WIN_NULL      = cast(MPI_Win) 0x20000000;
 
 enum MPIR_Win_flavor
 {
