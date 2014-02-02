@@ -2,34 +2,6 @@ import core.stdc.config;
 
 extern (C):
 
-alias ADIOI_FileD* MPI_File;
-alias int MPI_Op;
-alias MPIR_Win_flavor MPIR_Win_flavor_t;
-alias MPIR_Win_model MPIR_Win_model_t;
-alias MPIR_Topo_type MPIR_Topo_type;
-alias <unimplemented> MPI_Handler_function;
-alias <unimplemented> MPI_Comm_copy_attr_function;
-alias <unimplemented> MPI_Comm_delete_attr_function;
-alias <unimplemented> MPI_Type_copy_attr_function;
-alias <unimplemented> MPI_Type_delete_attr_function;
-alias <unimplemented> MPI_Win_copy_attr_function;
-alias <unimplemented> MPI_Win_delete_attr_function;
-alias <unimplemented> MPI_Comm_errhandler_function;
-alias <unimplemented> MPI_File_errhandler_function;
-alias <unimplemented> MPI_Win_errhandler_function;
-alias <unimplemented> MPI_Comm_errhandler_fn;
-alias <unimplemented> MPI_File_errhandler_fn;
-alias <unimplemented> MPI_Win_errhandler_fn;
-alias int MPI_Errhandler;
-alias int MPI_Request;
-alias int MPI_Message;
-alias <unimplemented> MPI_User_function;
-alias <unimplemented> MPI_Copy_function;
-alias <unimplemented> MPI_Delete_function;
-alias int MPI_Info;
-alias c_long MPI_Aint;
-alias int MPI_Fint;
-alias long MPI_Count;
 alias long MPI_Offset;
 alias MPI_Status MPI_Status;
 alias MPIR_T_enum* MPI_T_enum;
@@ -44,8 +16,6 @@ alias <unimplemented> MPIX_Grequest_wait_function;
 alias <unimplemented> MPI_Datarep_conversion_function;
 alias <unimplemented> MPI_Datarep_extent_function;
 
-extern __gshared int* MPI_UNWEIGHTED;
-extern __gshared int* MPI_WEIGHTS_EMPTY;
 extern __gshared MPIR_T_pvar_handle* MPI_T_PVAR_ALL_HANDLES;
 extern __gshared MPI_Fint* MPI_F_STATUS_IGNORE;
 extern __gshared MPI_Fint* MPI_F_STATUSES_IGNORE;
@@ -323,6 +293,79 @@ const MPI_Group MPI_GROUP_EMPTY = cast(MPI_Group) 0x48000000;
 alias int MPI_Win;
 const MPI_Win MPI_WIN_NULL      = cast(MPI_Win) 0x20000000;
 
+/* File and IO */
+/* This define lets ROMIO know that MPI_File has been defined */
+// TODO: #define MPI_FILE_DEFINED
+/* ROMIO uses a pointer for MPI_File objects.  This must be the same definition
+   as in src/mpi/romio/include/mpio.h.in  */
+alias ADIOI_FileD* MPI_File;
+const MPI_File MPI_FILE_NULL    = cast(MPI_File) 0;
+
+/* Collective operations */
+alias int MPI_Op;
+
+const MPI_Op MPI_MAX     = cast(MPI_Op) 0x58000001;
+const MPI_Op MPI_MIN     = cast(MPI_Op) 0x58000002;
+const MPI_Op MPI_SUM     = cast(MPI_Op) 0x58000003;
+const MPI_Op MPI_PROD    = cast(MPI_Op) 0x58000004;
+const MPI_Op MPI_LAND    = cast(MPI_Op) 0x58000005;
+const MPI_Op MPI_BAND    = cast(MPI_Op) 0x58000006;
+const MPI_Op MPI_LOR     = cast(MPI_Op) 0x58000007;
+const MPI_Op MPI_BOR     = cast(MPI_Op) 0x58000008;
+const MPI_Op MPI_LXOR    = cast(MPI_Op) 0x58000009;
+const MPI_Op MPI_BXOR    = cast(MPI_Op) 0x5800000a;
+const MPI_Op MPI_MINLOC  = cast(MPI_Op) 0x5800000b;
+const MPI_Op MPI_MAXLOC  = cast(MPI_Op) 0x5800000c;
+const MPI_Op MPI_REPLACE = cast(MPI_Op) 0x5800000d;
+const MPI_Op MPI_NO_OP   = cast(MPI_Op) 0x5800000e;
+
+/* Permanent key values */
+/* C Versions (return pointer to value),
+   Fortran Versions (return integer value).
+   Handled directly by the attribute value routine
+   
+   DO NOT CHANGE THESE.  The values encode:
+   builtin kind (0x1 in bit 30-31)
+   Keyval object (0x9 in bits 26-29)
+   for communicator (0x1 in bits 22-25)
+   
+   Fortran versions of the attributes are formed by adding one to
+   the C version.
+ */
+const int MPI_TAG_UB            = 0x64400001;
+const int MPI_HOST              = 0x64400003;
+const int MPI_IO                = 0x64400005;
+const int MPI_WTIME_IS_GLOBAL   = 0x64400007;
+const int MPI_UNIVERSE_SIZE     = 0x64400009;
+const int MPI_LASTUSEDCODE      = 0x6440000b;
+const int MPI_APPNUM            = 0x6440000d;
+
+/* In addition, there are 5 predefined window attributes that are
+   defined for every window */
+const int MPI_WIN_BASE          = 0x66000001;
+const int MPI_WIN_SIZE          = 0x66000003;
+const int MPI_WIN_DISP_UNIT     = 0x66000005;
+const int MPI_WIN_CREATE_FLAVOR = 0x66000007;
+const int MPI_WIN_MODEL         = 0x66000009;
+
+/* TODO: what's this? */
+// #ifdef MPICH_DEFINE_ATTR_TYPE_TYPES
+// static const MPI_Datatype mpich_mpi_datatype_null MPICH_ATTR_TYPE_TAG_MUST_BE_NULL() = MPI_DATATYPE_NULL;
+// #endif
+
+/* These are only guesses; make sure you change them in mpif.h as well */
+const int MPI_MAX_PROCESSOR_NAME = 128;
+const int MPI_MAX_LIBRARY_VERSION_STRING = 8192;
+const int MPI_MAX_ERROR_STRING   = 1024;
+const int MPI_MAX_PORT_NAME      = 256;
+const int MPI_MAX_OBJECT_NAME    = 128;
+
+/* Pre-defined constants */
+const int MPI_UNDEFINED          = (-32766);
+const int MPI_KEYVAL_INVALID     = 0x24000000;
+
+/* MPI-3 window flavors */
+alias MPIR_Win_flavor MPIR_Win_flavor_t;
 enum MPIR_Win_flavor
 {
 	MPI_WIN_FLAVOR_CREATE = 1,
@@ -331,12 +374,19 @@ enum MPIR_Win_flavor
 	MPI_WIN_FLAVOR_SHARED = 4
 }
 
+/* MPI-3 window consistency models */
+alias MPIR_Win_model MPIR_Win_model_t;
 enum MPIR_Win_model
 {
 	MPI_WIN_SEPARATE = 1,
 	MPI_WIN_UNIFIED = 2
 }
 
+/* Upper bound on the overhead in bsend for each message buffer */
+const int MPI_BSEND_OVERHEAD = 96;
+
+/* Topology types */
+alias MPIR_Topo_type MPIR_Topo_type;
 enum MPIR_Topo_type
 {
 	MPI_GRAPH = 1,
@@ -344,6 +394,127 @@ enum MPIR_Topo_type
 	MPI_DIST_GRAPH = 3
 }
 
+/* TODO: what's this? */
+// #define MPI_BOTTOM      (void *)0
+extern __gshared int* MPI_UNWEIGHTED;
+extern __gshared int* MPI_WEIGHTS_EMPTY;
+
+const int MPI_PROC_NULL      = (-1);
+const int MPI_ANY_SOURCE     = (-2);
+const int MPI_ROOT           = (-3);
+const int MPI_ANY_TAG        = (-1);
+
+const int MPI_LOCK_EXCLUSIVE = 234;
+const int MPI_LOCK_SHARED    = 235;
+
+/* TODO: what's this? */
+/* C functions */
+// typedef void (MPI_Handler_function) ( MPI_Comm *, int *, ... );
+// typedef int (MPI_Comm_copy_attr_function)(MPI_Comm, int, void *, void *, 
+// 					  void *, int *);
+// typedef int (MPI_Comm_delete_attr_function)(MPI_Comm, int, void *, void *);
+// typedef int (MPI_Type_copy_attr_function)(MPI_Datatype, int, void *, void *, 
+// 					  void *, int *);
+// typedef int (MPI_Type_delete_attr_function)(MPI_Datatype, int, void *, void *);
+// typedef int (MPI_Win_copy_attr_function)(MPI_Win, int, void *, void *, void *,
+// 					 int *);
+// typedef int (MPI_Win_delete_attr_function)(MPI_Win, int, void *, void *);
+// /* added in MPI-2.2 */
+// typedef void (MPI_Comm_errhandler_function)(MPI_Comm *, int *, ...);
+// typedef void (MPI_File_errhandler_function)(MPI_File *, int *, ...);
+// typedef void (MPI_Win_errhandler_function)(MPI_Win *, int *, ...);
+// /* names that were added in MPI-2.0 and deprecated in MPI-2.2 */
+// typedef MPI_Comm_errhandler_function MPI_Comm_errhandler_fn;
+// typedef MPI_File_errhandler_function MPI_File_errhandler_fn;
+// typedef MPI_Win_errhandler_function MPI_Win_errhandler_fn;
+
+/* Built in (0x1 in 30-31), errhandler (0x5 in bits 26-29, allkind (0
+   in 22-25), index in the low bits */
+const MPI_Errhandler MPI_ERRORS_ARE_FATAL = cast(MPI_Errhandler) 0x54000000;
+const MPI_Errhandler MPI_ERRORS_RETURN    = cast(MPI_Errhandler) 0x54000001;
+/* MPIR_ERRORS_THROW_EXCEPTIONS is not part of the MPI standard, it is here to
+   facilitate the c++ binding which has MPI::ERRORS_THROW_EXCEPTIONS. 
+   Using the MPIR prefix preserved the MPI_ names for objects defined by
+   the standard. */
+const MPI_Errhandler MPIR_ERRORS_THROW_EXCEPTIONS = cast(MPI_Errhandler) 0x54000002;
+alias int MPI_Errhandler;
+
+/* TODO: what's this? */
+// /* Make the C names for the dup function mixed case.
+//    This is required for systems that use all uppercase names for Fortran 
+//    externals.  */
+// /* MPI 1 names */
+// #define MPI_NULL_COPY_FN   ((MPI_Copy_function *)0)
+// #define MPI_NULL_DELETE_FN ((MPI_Delete_function *)0)
+// #define MPI_DUP_FN         MPIR_Dup_fn
+// /* MPI 2 names */
+// #define MPI_COMM_NULL_COPY_FN ((MPI_Comm_copy_attr_function*)0)
+// #define MPI_COMM_NULL_DELETE_FN ((MPI_Comm_delete_attr_function*)0)
+// #define MPI_COMM_DUP_FN  ((MPI_Comm_copy_attr_function *)MPI_DUP_FN)
+// #define MPI_WIN_NULL_COPY_FN ((MPI_Win_copy_attr_function*)0)
+// #define MPI_WIN_NULL_DELETE_FN ((MPI_Win_delete_attr_function*)0)
+// #define MPI_WIN_DUP_FN   ((MPI_Win_copy_attr_function*)MPI_DUP_FN)
+// #define MPI_TYPE_NULL_COPY_FN ((MPI_Type_copy_attr_function*)0)
+// #define MPI_TYPE_NULL_DELETE_FN ((MPI_Type_delete_attr_function*)0)
+// #define MPI_TYPE_DUP_FN ((MPI_Type_copy_attr_function*)MPI_DUP_FN)
+
+/* MPI request opjects */
+alias int MPI_Request;
+
+/* MPI message objects for Mprobe and related functions */
+alias int MPI_Message;
+
+/* TODO: what's this? */
+// /* User combination function */
+// typedef void (MPI_User_function) ( void *, void *, int *, MPI_Datatype * ); 
+
+// /* MPI Attribute copy and delete functions */
+// typedef int (MPI_Copy_function) ( MPI_Comm, int, void *, void *, void *, int * );
+// typedef int (MPI_Delete_function) ( MPI_Comm, int, void *, void * );
+
+const int MPI_VERSION    = 3;
+const int MPI_SUBVERSION = 0;
+const int MPICH_NAME     = 3;
+const int MPICH          = 1;
+const int MPICH_HAS_C2F  = 1;
+
+/* MPICH_VERSION is the version string. MPICH_NUMVERSION is the
+ * numeric version that can be used in numeric comparisons.
+ *
+ * MPICH_VERSION uses the following format:
+ * Version: [MAJ].[MIN].[REV][EXT][EXT_NUMBER]
+ * Example: 1.0.7rc1 has
+ *          MAJ = 1
+ *          MIN = 0
+ *          REV = 7
+ *          EXT = rc
+ *          EXT_NUMBER = 1
+ *
+ * MPICH_NUMVERSION will convert EXT to a format number:
+ *          ALPHA (a) = 0
+ *          BETA (b)  = 1
+ *          RC (rc)   = 2
+ *          PATCH (p) = 3
+ * Regular releases are treated as patch 0
+ *
+ * Numeric version will have 1 digit for MAJ, 2 digits for MIN, 2
+ * digits for REV, 1 digit for EXT and 2 digits for EXT_NUMBER. So,
+ * 1.0.7rc1 will have the numeric version 10007201.
+ */
+const string MPICH_VERSION = "3.0.4";
+const int MPICH_NUMVERSION = 30004300;
+
+const int MPICH_RELEASE_TYPE_ALPHA = 0;
+const int MPICH_RELEASE_TYPE_BETA  = 1;
+const int MPICH_RELEASE_TYPE_RC    = 2;
+const int MPICH_RELEASE_TYPE_PATCH = 3;
+
+template MPICH_CALC_VERSION(int MAJOR, int MINOR, int REVISION, int TYPE, int PATCH)
+{
+  const int MPICH_CALC_VERSION(MAJOR, MINOR, REVISION, TYPE, PATCH) = ((MAJOR) * 10000000) + ((MINOR) * 100000) + ((REVISION) * 1000) + ((TYPE) * 100) + (PATCH);
+}
+
+/* for the datatype decoders */
 enum MPIR_Combiner_enum
 {
 	MPI_COMBINER_NAMED = 1,
@@ -366,6 +537,39 @@ enum MPIR_Combiner_enum
 	MPI_COMBINER_F90_INTEGER = 18,
 	MPI_COMBINER_RESIZED = 19
 }
+
+/* for info */
+alias int MPI_Info;
+const MPI_Info MPI_INFO_NULL = cast(MPI_Info) 0x1c000000;
+const MPI_Info MPI_INFO_ENV  = cast(MPI_Info) 0x5c000001;
+const int MPI_MAX_INFO_KEY   = 255;
+const int MPI_MAX_INFO_VAL   = 1024;
+
+/* for subarray and darray constructors */
+const int MPI_ORDER_C              = 56;
+const int MPI_ORDER_FORTRAN        = 57;
+const int MPI_DISTRIBUTE_BLOCK     = 121;
+const int MPI_DISTRIBUTE_CYCLIC    = 122;
+const int MPI_DISTRIBUTE_NONE      = 123;
+const int MPI_DISTRIBUTE_DFLT_DARG = -49767;
+
+/* TODO: what's this? */
+// #define MPI_IN_PLACE  (void *) -1
+
+/* asserts for one-sided communication */
+const int MPI_MODE_NOCHECK     = 1024;
+const int MPI_MODE_NOSTORE     = 2048;
+const int MPI_MODE_NOPUT       = 4096;
+const int MPI_MODE_NOPRECEDE   = 8192;
+const int MPI_MODE_NOSUCCEED   = 16384; 
+
+/* predefined types for MPI_Comm_split_type */
+const int MPI_COMM_TYPE_SHARED = 1;
+
+/* Definitions that are determined by configure. */
+alias c_long MPI_Aint;
+alias int MPI_Fint;
+alias long MPI_Count;
 
 enum MPIR_T_verbosity_t
 {
