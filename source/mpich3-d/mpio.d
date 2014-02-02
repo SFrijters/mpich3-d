@@ -11,6 +11,105 @@ extern (C):
 
 /* TODO: missing section */
 
+// #ifndef MPIO_INCLUDE
+// #define MPIO_INCLUDE
+
+// #include "mpi.h"
+
+// #if defined(__cplusplus)
+// extern "C" {
+// #endif
+
+// #define ROMIO_VERSION 126 /* version 1.2.6 */
+
+// /* define MPI-IO datatypes and constants */
+
+// #ifndef MPI_FILE_DEFINED
+// typedef struct ADIOI_FileD *MPI_File;
+// #endif
+
+// #define HAVE_MPI_GREQUEST 1
+// #ifndef HAVE_MPI_GREQUEST
+// typedef struct ADIOI_RequestD *MPIO_Request;  
+// #else
+// #define MPIO_Request MPI_Request
+// #define MPIO_USES_MPI_REQUEST
+// /* Also rename the MPIO routines to get the MPI versions */
+// #define MPIO_Wait MPI_Wait
+// #define MPIO_Test MPI_Test
+// #define PMPIO_Wait PMPI_Wait
+// #define PMPIO_Test PMPI_Test
+// #endif
+// #define MPIO_REQUEST_DEFINED
+
+// #ifndef HAVE_MPI_OFFSET
+// typedef long long MPI_Offset;
+// /* If we needed to define MPI_Offset, then we also need to make
+//    this definition. */
+// #ifndef HAVE_MPI_DATAREP_FUNCTIONS
+// #define HAVE_MPI_DATAREP_FUNCTIONS
+// typedef int (MPI_Datarep_conversion_function)(void *, MPI_Datatype, int, 
+//              void *, MPI_Offset, void *);
+// typedef int (MPI_Datarep_extent_function)(MPI_Datatype datatype, MPI_Aint *,
+// 					  void *);
+// #endif
+// #endif
+
+// #ifndef NEEDS_MPI_FINT
+
+// #endif
+// #ifdef NEEDS_MPI_FINT
+// typedef int MPI_Fint; 
+// #endif
+
+// #ifndef HAVE_MPI_INFO
+// #define HAVE_MPI_INFO
+// #endif
+// #ifndef HAVE_MPI_INFO
+//   typedef struct MPIR_Info *MPI_Info;
+// # define MPI_INFO_NULL         ((MPI_Info) 0)
+// # define MPI_MAX_INFO_KEY       255
+// # define MPI_MAX_INFO_VAL      1024
+// #endif
+
+// #define MPI_MODE_RDONLY              2  /* ADIO_RDONLY */
+// #define MPI_MODE_RDWR                8  /* ADIO_RDWR  */
+// #define MPI_MODE_WRONLY              4  /* ADIO_WRONLY  */
+// #define MPI_MODE_CREATE              1  /* ADIO_CREATE */ 
+// #define MPI_MODE_EXCL               64  /* ADIO_EXCL */
+// #define MPI_MODE_DELETE_ON_CLOSE    16  /* ADIO_DELETE_ON_CLOSE */
+// #define MPI_MODE_UNIQUE_OPEN        32  /* ADIO_UNIQUE_OPEN */
+// #define MPI_MODE_APPEND            128  /* ADIO_APPEND */
+// #define MPI_MODE_SEQUENTIAL        256  /* ADIO_SEQUENTIAL */
+
+// #define MPI_DISPLACEMENT_CURRENT   -54278278
+
+// #ifndef MPICH
+// /* FIXME: Make sure that we get a consistent definition of MPI_FILE_NULL
+// 	in MPICH */
+// /* MPICH defines null object handles differently */
+// #define MPI_FILE_NULL           ((MPI_File) 0)
+// #endif
+// #define MPIO_REQUEST_NULL       ((MPIO_Request) 0)
+
+// #define MPI_SEEK_SET            600
+// #define MPI_SEEK_CUR            602
+// #define MPI_SEEK_END            604
+
+// #define MPI_MAX_DATAREP_STRING  128
+
+// #ifndef HAVE_MPI_DARRAY_SUBARRAY
+// #define HAVE_MPI_DARRAY_SUBARRAY
+// #endif
+// #ifndef HAVE_MPI_DARRAY_SUBARRAY
+// #  define MPI_ORDER_C             56
+// #  define MPI_ORDER_FORTRAN       57
+// #  define MPI_DISTRIBUTE_BLOCK    121
+// #  define MPI_DISTRIBUTE_CYCLIC   122
+// #  define MPI_DISTRIBUTE_NONE     123
+// #  define MPI_DISTRIBUTE_DFLT_DARG -49767
+// #endif
+
 /* MPI-IO function prototypes */
 
 /* Section 9.2 */
@@ -95,11 +194,93 @@ int MPI_File_sync (MPI_File fh);
 
 /* TODO: missing section */
 
+// /* Section 4.13.3 */
+// #ifndef MPICH
+// /* MPICH provides these definitions */
+// int MPI_File_set_errhandler(MPI_File file, MPI_Errhandler errhandler);
+// int MPI_File_get_errhandler(MPI_File file, MPI_Errhandler *errhandler);
+// #endif
+// /* End Prototypes */
+
+// #ifndef HAVE_MPI_DARRAY_SUBARRAY
+// /* Section 4.14.4 */
+// int MPI_Type_create_subarray(int ndims, const int array_of_sizes[], const int array_of_subsizes[],
+//                              const int array_of_starts[], int order, MPI_Datatype oldtype,
+//                              MPI_Datatype *newtype);
+
+// /* Section 4.14.5 */
+// int MPI_Type_create_darray(int size, int rank, int ndims, const int array_of_gsizes[],
+//                            const int array_of_distribs[], const int array_of_dargs[],
+//                            const int array_of_psizes, int order, MPI_Datatype oldtype,
+//                            MPI_Datatype *newtype);
+// #endif
+
+// /* The globus2 device has to rename MPI_ symbols in order to use the vendor
+//    MPI as one of its transport mechanisms.  Therefore, the following undefines
+//    should only happen if MPICH_RENAMING_MPI_FUNCS is not defined. */
+// /* Section 4.12.4 */
+// #if !defined(MPICH_RENAMING_MPI_FUNCS)
+// #ifdef MPI_File_f2c
+// #undef MPI_File_f2c
+// #endif
+// #ifdef MPI_File_c2f
+// #undef MPI_File_c2f
+// #endif
+// #endif
+// /* above needed for some versions of mpi.h in MPICH!! */
+// MPI_File MPI_File_f2c(MPI_Fint file);
+// MPI_Fint MPI_File_c2f(MPI_File file);
+
+
+// #ifndef HAVE_MPI_GREQUEST
+// /* The following functions are required if generalized requests are not
+//    available, because in that case, an MPIO_Request object
+//    is currently used for nonblocking I/O. */
+// int MPIO_Test(MPIO_Request *request, int *flag, MPI_Status *status);
+// int MPIO_Wait(MPIO_Request *request, MPI_Status *status);
+// int MPIO_Testall(int count, MPIO_Request array_of_requests[], int *flag,
+//                  MPI_Status array_of_statuses[]);
+// int MPIO_Waitall(int count, MPIO_Request array_of_requests[], MPI_Status array_of_statuses[]);
+// int MPIO_Testany(int count, MPIO_Request array_of_requests[], int *indx, int *flag,
+//                  MPI_Status *status);
+// int MPIO_Waitany(int count, MPIO_Request array_of_requests[], int *indx, MPI_Status *status);
+// int MPIO_Waitsome(int incount, MPIO_Request array_of_requests[], int *outcount,
+//                   int array_of_indices[], MPI_Status array_of_statuses[]);
+// int MPIO_Testsome(int incount, MPIO_Request array_of_requests[], int *outcount,
+//                   int array_of_indices[], MPI_Status array_of_statuses[]);
+
+// MPI_Fint MPIO_Request_c2f(MPIO_Request request);
+// MPIO_Request MPIO_Request_f2c(MPI_Fint request);
+// #endif /* HAVE_MPI_GREQUEST */
+
+// /* info functions if not defined in the MPI implementation */
+// #ifndef HAVE_MPI_INFO
+
+// int MPI_Info_create(MPI_Info *info);
+// int MPI_Info_set(MPI_Info info, const char *key, const char *value);
+// int MPI_Info_delete(MPI_Info info, const char *key);
+// int MPI_Info_get(MPI_Info info, const char *key, int valuelen, char *value, int *flag);
+// int MPI_Info_get_valuelen(MPI_Info info, const char *key, int *valuelen, int *flag);
+// int MPI_Info_get_nkeys(MPI_Info info, int *nkeys);
+// int MPI_Info_get_nthkey(MPI_Info info, int n, char *key);
+// int MPI_Info_dup(MPI_Info info, MPI_Info *newinfo);
+// int MPI_Info_free(MPI_Info *info);
+
+// /* The globus2 device has to rename MPI_ symbols in order to use the vendor
+//    MPI as one of its transport mechanisms.  Therefore, the following undefines
+//    should only happen if MPICH_RENAMING_MPI_FUNCS is not defined. */
+// #if !defined(MPICH_RENAMING_MPI_FUNCS)
+// #ifdef MPI_Info_f2c
+// #undef MPI_Info_f2c
+// #endif
+// #ifdef MPI_Info_c2f
+// #undef MPI_Info_c2f
+// #endif
+// #endif
+
 /* above needed for some versions of mpi.h in MPICH!! */
 MPI_File MPI_File_f2c (MPI_Fint file);
 MPI_Fint MPI_File_c2f (MPI_File file);
-
-/* TODO: missing section */
 
 /**************** BINDINGS FOR THE PROFILING INTERFACE ***************/
 
@@ -184,10 +365,65 @@ int PMPI_File_get_atomicity (MPI_File, int*);
 int PMPI_File_sync (MPI_File);
 
 /* TODO: missing section */
+// /* Section 4.13.3 */
+// #ifndef MPICH
+// /* MPICH provides these definitions */
+// int PMPI_File_set_errhandler( MPI_File, MPI_Errhandler );
+// int PMPI_File_get_errhandler( MPI_File, MPI_Errhandler * );
+// #endif
+
+// #ifndef HAVE_MPI_DARRAY_SUBARRAY
+// /* Section 4.14.4 */
+// int PMPI_Type_create_subarray(int, int *, int *, int *, int, 
+//                       MPI_Datatype, MPI_Datatype *);
+
+// /* Section 4.14.5 */
+// int PMPI_Type_create_darray(int, int, int, int *, int *, 
+//                     int *, int *, int, MPI_Datatype, MPI_Datatype *);
+// #endif
 
 /* Section 4.12.4 */
 MPI_File PMPI_File_f2c (MPI_Fint);
 MPI_Fint PMPI_File_c2f (MPI_File);
 
 /* TODO: missing section */
+// #ifndef HAVE_MPI_GREQUEST
+// /* The following functions are required if generalized requests are not
+//    available, because in that case, an MPIO_Request object
+//    is currently used for nonblocking I/O. */
+// int PMPIO_Test(MPIO_Request *, int *, MPI_Status *);
+// int PMPIO_Wait(MPIO_Request *, MPI_Status *);
+// int PMPIO_Testall(int, MPIO_Request *, int *, MPI_Status *);
+// int PMPIO_Waitall(int, MPIO_Request *, MPI_Status *);
+// int PMPIO_Testany(int, MPIO_Request *, int *, int *, MPI_Status *);
+// int PMPIO_Waitany(int, MPIO_Request *, int *, MPI_Status *);
+// int PMPIO_Waitsome(int, MPIO_Request *, int *, int *, MPI_Status *);
+// int PMPIO_Testsome(int, MPIO_Request *, int *, int *, MPI_Status *);
+// MPI_Fint PMPIO_Request_c2f(MPIO_Request);
+// MPIO_Request PMPIO_Request_f2c(MPI_Fint);
+// #endif /* HAVE_MPI_GREQUEST */
+
+// /* info functions if not defined in the MPI implementation */
+// #ifndef HAVE_MPI_INFO
+
+// int PMPI_Info_create(MPI_Info *);
+// int PMPI_Info_set(MPI_Info, char *, char *);
+// int PMPI_Info_delete(MPI_Info, char *);
+// int PMPI_Info_get(MPI_Info, char *, int, char *, int *);
+// int PMPI_Info_get_valuelen(MPI_Info, char *, int *, int *);
+// int PMPI_Info_get_nkeys(MPI_Info, int *);
+// int PMPI_Info_get_nthkey(MPI_Info, int, char *);
+// int PMPI_Info_dup(MPI_Info, MPI_Info *);
+// int PMPI_Info_free(MPI_Info *);
+
+// MPI_Fint PMPI_Info_c2f(MPI_Info);
+// MPI_Info PMPI_Info_f2c(MPI_Fint);
+// #endif
+
+// #if defined(__cplusplus)
+// }
+// #endif
+
+// #endif
+
 
