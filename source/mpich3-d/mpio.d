@@ -1,7 +1,7 @@
 /* -*- Mode: C; c-basic-offset:4 ; -*- */
-/* 
+/*
  *
- *   Copyright (C) 1997 University of Chicago. 
+ *   Copyright (C) 1997 University of Chicago.
  *   See COPYRIGHT notice in top-level directory.
  */
 
@@ -37,8 +37,8 @@ int MPI_File_write_at (MPI_File fh, MPI_Offset offset, const(void)* buf, int cou
 int MPI_File_write_at_all (MPI_File fh, MPI_Offset offset, const(void)* buf, int count, MPI_Datatype datatype, MPI_Status* status);
 
 /* nonblocking calls currently use MPIO_Request, because generalized
-   requests not yet implemented. For the same reason, MPIO_Test and 
-   MPIO_Wait are used to test and wait on nonblocking I/O requests */ 
+   requests not yet implemented. For the same reason, MPIO_Test and
+   MPIO_Wait are used to test and wait on nonblocking I/O requests */
 int MPI_File_iread_at (MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Request* request);
 int MPI_File_iwrite_at (MPI_File fh, MPI_Offset offset, const(void)* buf, int count, MPI_Datatype datatype, MPI_Request* request);
 
@@ -49,8 +49,8 @@ int MPI_File_write (MPI_File fh, const(void)* buf, int count, MPI_Datatype datat
 int MPI_File_write_all (MPI_File fh, const(void)* buf, int count, MPI_Datatype datatype, MPI_Status* status);
 
 /* nonblocking calls currently use MPIO_Request, because generalized
-   requests not yet implemented. For the same reason, MPIO_Test and 
-   MPIO_Wait are used to test and wait on nonblocking I/O requests */ 
+   requests not yet implemented. For the same reason, MPIO_Test and
+   MPIO_Wait are used to test and wait on nonblocking I/O requests */
 
 int MPI_File_iread (MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request);
 int MPI_File_iwrite (MPI_File fh, const(void)* buf, int count, MPI_Datatype datatype, MPI_Request* request);
@@ -126,8 +126,8 @@ int PMPI_File_write_at (MPI_File, MPI_Offset, const(void)*, int, MPI_Datatype, M
 int PMPI_File_write_at_all (MPI_File, MPI_Offset, const(void)*, int, MPI_Datatype, MPI_Status*);
 
 /* nonblocking calls currently use MPIO_Request, because generalized
-   requests not yet implemented. For the same reason, MPIO_Test and 
-   MPIO_Wait are used to test and wait on nonblocking I/O requests */ 
+   requests not yet implemented. For the same reason, MPIO_Test and
+   MPIO_Wait are used to test and wait on nonblocking I/O requests */
 
 int PMPI_File_iread_at (MPI_File, MPI_Offset, void*, int, MPI_Datatype, MPI_Request*);
 int PMPI_File_iwrite_at (MPI_File, MPI_Offset, const(void)*, int, MPI_Datatype, MPI_Request*);
@@ -139,8 +139,8 @@ int PMPI_File_write (MPI_File, const(void)*, int, MPI_Datatype, MPI_Status*);
 int PMPI_File_write_all (MPI_File, const(void)*, int, MPI_Datatype, MPI_Status*);
 
 /* nonblocking calls currently use MPIO_Request, because generalized
-   requests not yet implemented. For the same reason, MPIO_Test and 
-   MPIO_Wait are used to test and wait on nonblocking I/O requests */ 
+   requests not yet implemented. For the same reason, MPIO_Test and
+   MPIO_Wait are used to test and wait on nonblocking I/O requests */
 
 int PMPI_File_iread (MPI_File, void*, int, MPI_Datatype, MPI_Request*);
 int PMPI_File_iwrite (MPI_File, const(void)*, int, MPI_Datatype, MPI_Request*);
