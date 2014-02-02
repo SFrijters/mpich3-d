@@ -180,10 +180,20 @@ struct MPIR_T_pvar_handle;
 
 struct MPIR_T_enum;
 
+/* 
+   For systems that may need to add additional definitions to support
+   different declaration styles and options (e.g., different calling 
+   conventions or DLL import/export controls).  
+*/
+/* --Insert Additional Definitions Here-- */
 
-struct mpixi_mutex_s;
+/*
+ * Normally, we provide prototypes for all MPI routines.  In a few weird
+ * cases, we need to suppress the prototypes.
+ */
 
-
+/* We require that the C compiler support prototypes */
+/* Begin Prototypes */
 int MPI_Send (const(void)* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm);
 int MPI_Recv (void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status);
 int MPI_Get_count (const(MPI_Status)* status, MPI_Datatype datatype, int* count);
@@ -316,8 +326,13 @@ int MPI_Init (int* argc, char*** argv);
 int MPI_Finalize ();
 int MPI_Initialized (int* flag);
 int MPI_Abort (MPI_Comm comm, int errorcode);
+
+/* Note that we may need to define a @PCONTROL_LIST@ depending on whether
+   stdargs are supported */
 int MPI_Pcontrol (const int level, ...);
 int MPIR_Dup_fn (MPI_Comm oldcomm, int keyval, void* extra_state, void* attribute_val_in, void* attribute_val_out, int* flag);
+
+/* Process Creation and Management */
 int MPI_Close_port (const(char)* port_name);
 int MPI_Comm_accept (const(char)* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm);
 int MPI_Comm_connect (const(char)* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm);
@@ -332,6 +347,8 @@ int MPI_Publish_name (const(char)* service_name, MPI_Info info, const(char)* por
 int MPI_Unpublish_name (const(char)* service_name, MPI_Info info, const(char)* port_name);
 int MPI_Comm_set_info (MPI_Comm comm, MPI_Info info);
 int MPI_Comm_get_info (MPI_Comm comm, MPI_Info* info);
+
+/* One-Sided Communications */
 int MPI_Accumulate (const(void)* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Op op, MPI_Win win);
 int MPI_Get (void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win);
 int MPI_Put (const(void)* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win);
@@ -346,6 +363,8 @@ int MPI_Win_start (MPI_Group group, int assert_, MPI_Win win);
 int MPI_Win_test (MPI_Win win, int* flag);
 int MPI_Win_unlock (int rank, MPI_Win win);
 int MPI_Win_wait (MPI_Win win);
+
+/* MPI-3 One-Sided Communication Routines */
 int MPI_Win_allocate (MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, void* baseptr, MPI_Win* win);
 int MPI_Win_allocate_shared (MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, void* baseptr, MPI_Win* win);
 int MPI_Win_shared_query (MPI_Win win, int rank, MPI_Aint* size, int* disp_unit, void* baseptr);
@@ -368,6 +387,8 @@ int MPI_Win_flush_all (MPI_Win win);
 int MPI_Win_flush_local (int rank, MPI_Win win);
 int MPI_Win_flush_local_all (MPI_Win win);
 int MPI_Win_sync (MPI_Win win);
+
+/* External Interfaces */
 int MPI_Add_error_class (int* errorclass);
 int MPI_Add_error_code (int errorclass, int* errorcode);
 int MPI_Add_error_string (int errorcode, const(char)* string);
@@ -444,6 +465,10 @@ int MPI_Unpack_external (const(char)* datarep, const(void)* inbuf, MPI_Aint insi
 int MPI_Win_create_errhandler (void function (MPI_Win*, int*, ...) win_errhandler_fn, MPI_Errhandler* errhandler);
 int MPI_Win_get_errhandler (MPI_Win win, MPI_Errhandler* errhandler);
 int MPI_Win_set_errhandler (MPI_Win win, MPI_Errhandler errhandler);
+
+/* Fortran 90-related functions.  These routines are available only if
+   Fortran 90 support is enabled 
+*/
 int MPI_Type_create_f90_integer (int range, MPI_Datatype* newtype);
 int MPI_Type_create_f90_real (int precision, int range, MPI_Datatype* newtype);
 int MPI_Type_create_f90_complex (int precision, int range, MPI_Datatype* newtype);
@@ -454,10 +479,14 @@ int MPI_Dist_graph_create_adjacent (MPI_Comm comm_old, int indegree, const(int)*
 int MPI_Dist_graph_create (MPI_Comm comm_old, int n, const(int)* sources, const(int)* degrees, const(int)* destinations, const(int)* weights, MPI_Info info, int reorder, MPI_Comm* comm_dist_graph);
 int MPI_Dist_graph_neighbors_count (MPI_Comm comm, int* indegree, int* outdegree, int* weighted);
 int MPI_Dist_graph_neighbors (MPI_Comm comm, int maxindegree, int* sources, int* sourceweights, int maxoutdegree, int* destinations, int* destweights);
+
+/* Matched probe functionality */
 int MPI_Improbe (int source, int tag, MPI_Comm comm, int* flag, MPI_Message* message, MPI_Status* status);
 int MPI_Imrecv (void* buf, int count, MPI_Datatype datatype, MPI_Message* message, MPI_Request* request);
 int MPI_Mprobe (int source, int tag, MPI_Comm comm, MPI_Message* message, MPI_Status* status);
 int MPI_Mrecv (void* buf, int count, MPI_Datatype datatype, MPI_Message* message, MPI_Status* status);
+
+/* Nonblocking collectives */
 int MPI_Comm_idup (MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request);
 int MPI_Ibarrier (MPI_Comm comm, MPI_Request* request);
 int MPI_Ibcast (void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm, MPI_Request* request);
@@ -476,6 +505,8 @@ int MPI_Ireduce_scatter (const(void)* sendbuf, void* recvbuf, const(int)* recvco
 int MPI_Ireduce_scatter_block (const(void)* sendbuf, void* recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm, MPI_Request* request);
 int MPI_Iscan (const(void)* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm, MPI_Request* request);
 int MPI_Iexscan (const(void)* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm, MPI_Request* request);
+
+/* Neighborhood collectives */
 int MPI_Ineighbor_allgather (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request);
 int MPI_Ineighbor_allgatherv (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, const(int)* recvcounts, const(int)* displs, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request);
 int MPI_Ineighbor_alltoall (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request);
@@ -486,16 +517,30 @@ int MPI_Neighbor_allgatherv (const(void)* sendbuf, int sendcount, MPI_Datatype s
 int MPI_Neighbor_alltoall (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
 int MPI_Neighbor_alltoallv (const(void)* sendbuf, const(int)* sendcounts, const(int)* sdispls, MPI_Datatype sendtype, void* recvbuf, const(int)* recvcounts, const(int)* rdispls, MPI_Datatype recvtype, MPI_Comm comm);
 int MPI_Neighbor_alltoallw (const(void)* sendbuf, const(int)* sendcounts, const(MPI_Aint)* sdispls, const(MPI_Datatype)* sendtypes, void* recvbuf, const(int)* recvcounts, const(MPI_Aint)* rdispls, const(MPI_Datatype)* recvtypes, MPI_Comm comm);
+
+/* Shared memory */
 int MPI_Comm_split_type (MPI_Comm comm, int split_type, int key, MPI_Info info, MPI_Comm* newcomm);
+
+/* MPI-3 "large count" routines */
 int MPI_Get_elements_x (const(MPI_Status)* status, MPI_Datatype datatype, MPI_Count* count);
 int MPI_Status_set_elements_x (MPI_Status* status, MPI_Datatype datatype, MPI_Count count);
 int MPI_Type_get_extent_x (MPI_Datatype datatype, MPI_Count* lb, MPI_Count* extent);
 int MPI_Type_get_true_extent_x (MPI_Datatype datatype, MPI_Count* lb, MPI_Count* extent);
 int MPI_Type_size_x (MPI_Datatype datatype, MPI_Count* size);
+
+/* Noncollective communicator creation */
 int MPI_Comm_create_group (MPI_Comm comm, MPI_Group group, int tag, MPI_Comm* newcomm);
+
+/* Non-standard but public extensions to MPI */
+/* Fault Tolerance Extensions */
 int MPIX_Comm_group_failed (MPI_Comm comm, MPI_Group* failed_group);
 int MPIX_Comm_remote_group_failed (MPI_Comm comm, MPI_Group* failed_group);
 int MPIX_Comm_reenable_anysource (MPI_Comm comm, MPI_Group* failed_group);
+
+/* MPI_T interface */
+/* The MPI_T routines are available only in C bindings - tell tools that they
+   can skip these prototypes */
+/* Begin Skip Prototypes */
 int MPI_T_init_thread (int required, int* provided);
 int MPI_T_finalize ();
 int MPI_T_enum_get_info (MPI_T_enum enumtype, int* num, char* name, int* name_len);
@@ -524,6 +569,10 @@ int MPI_T_category_get_cvars (int cat_index, int len, int* indices);
 int MPI_T_category_get_pvars (int cat_index, int len, int* indices);
 int MPI_T_category_get_categories (int cat_index, int len, int* indices);
 int MPI_T_category_changed (int* stamp);
+/* End Skip Prototypes */
+/* End Prototypes */
+
+/* Here are the bindings of the profiling routines */
 int PMPI_Send (const(void)* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm);
 int PMPI_Recv (void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status);
 int PMPI_Get_count (const(MPI_Status)* status, MPI_Datatype datatype, int* count);
@@ -656,7 +705,12 @@ int PMPI_Init (int* argc, char*** argv);
 int PMPI_Finalize ();
 int PMPI_Initialized (int* flag);
 int PMPI_Abort (MPI_Comm comm, int errorcode);
+
+/* Note that we may need to define a @PCONTROL_LIST@ depending on whether
+   stdargs are supported */
 int PMPI_Pcontrol (const int level, ...);
+
+/* Process Creation and Management */
 int PMPI_Close_port (const(char)* port_name);
 int PMPI_Comm_accept (const(char)* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm);
 int PMPI_Comm_connect (const(char)* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm);
@@ -671,6 +725,8 @@ int PMPI_Publish_name (const(char)* service_name, MPI_Info info, const(char)* po
 int PMPI_Unpublish_name (const(char)* service_name, MPI_Info info, const(char)* port_name);
 int PMPI_Comm_set_info (MPI_Comm comm, MPI_Info info);
 int PMPI_Comm_get_info (MPI_Comm comm, MPI_Info* info);
+
+/* One-Sided Communications */
 int PMPI_Accumulate (const(void)* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Op op, MPI_Win win);
 int PMPI_Get (void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win);
 int PMPI_Put (const(void)* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win);
@@ -685,6 +741,8 @@ int PMPI_Win_start (MPI_Group group, int assert_, MPI_Win win);
 int PMPI_Win_test (MPI_Win win, int* flag);
 int PMPI_Win_unlock (int rank, MPI_Win win);
 int PMPI_Win_wait (MPI_Win win);
+
+/* MPI-3 One-Sided Communication Routines */
 int PMPI_Win_allocate (MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, void* baseptr, MPI_Win* win);
 int PMPI_Win_allocate_shared (MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm, void* baseptr, MPI_Win* win);
 int PMPI_Win_shared_query (MPI_Win win, int rank, MPI_Aint* size, int* disp_unit, void* baseptr);
@@ -707,6 +765,8 @@ int PMPI_Win_flush_all (MPI_Win win);
 int PMPI_Win_flush_local (int rank, MPI_Win win);
 int PMPI_Win_flush_local_all (MPI_Win win);
 int PMPI_Win_sync (MPI_Win win);
+
+/* External Interfaces */
 int PMPI_Add_error_class (int* errorclass);
 int PMPI_Add_error_code (int errorclass, int* errorcode);
 int PMPI_Add_error_string (int errorcode, const(char)* string);
@@ -783,6 +843,10 @@ int PMPI_Unpack_external (const(char)* datarep, const(void)* inbuf, MPI_Aint ins
 int PMPI_Win_create_errhandler (void function (MPI_Win*, int*, ...) win_errhandler_fn, MPI_Errhandler* errhandler);
 int PMPI_Win_get_errhandler (MPI_Win win, MPI_Errhandler* errhandler);
 int PMPI_Win_set_errhandler (MPI_Win win, MPI_Errhandler errhandler);
+
+/* Fortran 90-related functions.  These routines are available only if
+   Fortran 90 support is enabled 
+*/
 int PMPI_Type_create_f90_integer (int r, MPI_Datatype* newtype);
 int PMPI_Type_create_f90_real (int p, int r, MPI_Datatype* newtype);
 int PMPI_Type_create_f90_complex (int p, int r, MPI_Datatype* newtype);
@@ -793,10 +857,14 @@ int PMPI_Dist_graph_create_adjacent (MPI_Comm comm_old, int indegree, const(int)
 int PMPI_Dist_graph_create (MPI_Comm comm_old, int n, const(int)* sources, const(int)* degrees, const(int)* destinations, const(int)* weights, MPI_Info info, int reorder, MPI_Comm* comm_dist_graph);
 int PMPI_Dist_graph_neighbors_count (MPI_Comm comm, int* indegree, int* outdegree, int* weighted);
 int PMPI_Dist_graph_neighbors (MPI_Comm comm, int maxindegree, int* sources, int* sourceweights, int maxoutdegree, int* destinations, int* destweights);
+
+/* Matched probe functionality */
 int PMPI_Improbe (int source, int tag, MPI_Comm comm, int* flag, MPI_Message* message, MPI_Status* status);
 int PMPI_Imrecv (void* buf, int count, MPI_Datatype datatype, MPI_Message* message, MPI_Request* request);
 int PMPI_Mprobe (int source, int tag, MPI_Comm comm, MPI_Message* message, MPI_Status* status);
 int PMPI_Mrecv (void* buf, int count, MPI_Datatype datatype, MPI_Message* message, MPI_Status* status);
+
+/* Nonblocking collectives */
 int PMPI_Comm_idup (MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request);
 int PMPI_Ibarrier (MPI_Comm comm, MPI_Request* request);
 int PMPI_Ibcast (void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm, MPI_Request* request);
@@ -815,6 +883,8 @@ int PMPI_Ireduce_scatter (const(void)* sendbuf, void* recvbuf, const(int)* recvc
 int PMPI_Ireduce_scatter_block (const(void)* sendbuf, void* recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm, MPI_Request* request);
 int PMPI_Iscan (const(void)* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm, MPI_Request* request);
 int PMPI_Iexscan (const(void)* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm, MPI_Request* request);
+
+/* Neighborhood collectives */
 int PMPI_Ineighbor_allgather (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request);
 int PMPI_Ineighbor_allgatherv (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, const(int)* recvcounts, const(int)* displs, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request);
 int PMPI_Ineighbor_alltoall (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request);
@@ -825,16 +895,30 @@ int PMPI_Neighbor_allgatherv (const(void)* sendbuf, int sendcount, MPI_Datatype 
 int PMPI_Neighbor_alltoall (const(void)* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm);
 int PMPI_Neighbor_alltoallv (const(void)* sendbuf, const(int)* sendcounts, const(int)* sdispls, MPI_Datatype sendtype, void* recvbuf, const(int)* recvcounts, const(int)* rdispls, MPI_Datatype recvtype, MPI_Comm comm);
 int PMPI_Neighbor_alltoallw (const(void)* sendbuf, const(int)* sendcounts, const(MPI_Aint)* sdispls, const(MPI_Datatype)* sendtypes, void* recvbuf, const(int)* recvcounts, const(MPI_Aint)* rdispls, const(MPI_Datatype)* recvtypes, MPI_Comm comm);
+
+/* Shared memory */
 int PMPI_Comm_split_type (MPI_Comm comm, int split_type, int key, MPI_Info info, MPI_Comm* newcomm);
+
+/* Noncollective communicator creation */
 int PMPI_Comm_create_group (MPI_Comm comm, MPI_Group group, int tag, MPI_Comm* newcomm);
+
+/* MPI-3 "large count" routines */
 int PMPI_Get_elements_x (const(MPI_Status)* status, MPI_Datatype datatype, MPI_Count* count);
 int PMPI_Status_set_elements_x (MPI_Status* status, MPI_Datatype datatype, MPI_Count count);
 int PMPI_Type_get_extent_x (MPI_Datatype datatype, MPI_Count* lb, MPI_Count* extent);
 int PMPI_Type_get_true_extent_x (MPI_Datatype datatype, MPI_Count* lb, MPI_Count* extent);
 int PMPI_Type_size_x (MPI_Datatype datatype, MPI_Count* size);
+
+/* Non-standard but public extensions to MPI */
+/* Fault Tolerance Extensions */
 int PMPIX_Comm_group_failed (MPI_Comm comm, MPI_Group* failed_group);
 int PMPIX_Comm_remote_group_failed (MPI_Comm comm, MPI_Group* failed_group);
 int PMPIX_Comm_reenable_anysource (MPI_Comm comm, MPI_Group* failed_group);
+
+/* MPI_T interface */
+/* The MPI_T routines are available only in C bindings - tell tools that they
+   can skip these prototypes */
+/* Begin Skip Prototypes */
 int PMPI_T_init_thread (int required, int* provided);
 int PMPI_T_finalize ();
 int PMPI_T_enum_get_info (MPI_T_enum enumtype, int* num, char* name, int* name_len);
@@ -863,17 +947,45 @@ int PMPI_T_category_get_cvars (int cat_index, int len, int* indices);
 int PMPI_T_category_get_pvars (int cat_index, int len, int* indices);
 int PMPI_T_category_get_categories (int cat_index, int len, int* indices);
 int PMPI_T_category_changed (int* stamp);
+/* End Skip Prototypes */
+
+/* TODO: feature advertisement */
+// #define MPIIMPL_ADVERTISES_FEATURES 1
+// #define MPIIMPL_HAVE_MPI_INFO 1                                                 
+// #define MPIIMPL_HAVE_MPI_COMBINER_DARRAY 1                                      
+// #define MPIIMPL_HAVE_MPI_TYPE_CREATE_DARRAY 1
+// #define MPIIMPL_HAVE_MPI_COMBINER_SUBARRAY 1                                    
+// #define MPIIMPL_HAVE_MPI_TYPE_CREATE_DARRAY 1
+// #define MPIIMPL_HAVE_MPI_COMBINER_DUP 1                                         
+// #define MPIIMPL_HAVE_MPI_GREQUEST 1      
+// #define MPIIMPL_HAVE_STATUS_SET_BYTES 1
+// #define MPIIMPL_HAVE_STATUS_SET_INFO 1
+
+/* TODO: mpio.h
+// #include "mpio.h"
+
+/* Generalized requests extensions */
+alias int MPIX_Grequest_class;
 int MPIX_Grequest_class_create (int function (void*, MPI_Status*) query_fn, int function (void*) free_fn, int function (void*, int) cancel_fn, int function (void*, MPI_Status*) poll_fn, int function (int, void**, double, MPI_Status*) wait_fn, MPIX_Grequest_class* greq_class);
 int MPIX_Grequest_class_allocate (MPIX_Grequest_class greq_class, void* extra_state, MPI_Request* request);
 int MPIX_Grequest_start (int function (void*, MPI_Status*) query_fn, int function (void*) free_fn, int function (void*, int) cancel_fn, int function (void*, MPI_Status*) poll_fn, int function (int, void**, double, MPI_Status*) wait_fn, void* extra_state, MPI_Request* request);
+
+/* RMA Mutexes Extensions */
+struct mpixi_mutex_s;
+alias mpixi_mutex_s* MPIX_Mutex;
 int MPIX_Mutex_create (int count, MPI_Comm comm, MPIX_Mutex* hdl);
 int MPIX_Mutex_free (MPIX_Mutex* hdl);
 int MPIX_Mutex_lock (MPIX_Mutex hdl, int mutex, int proc);
 int MPIX_Mutex_unlock (MPIX_Mutex hdl, int mutex, int proc);
+
+/* Generalized requests extensions */
 int PMPIX_Grequest_class_create (int function (void*, MPI_Status*) query_fn, int function (void*) free_fn, int function (void*, int) cancel_fn, int function (void*, MPI_Status*) poll_fn, int function (int, void**, double, MPI_Status*) wait_fn, MPIX_Grequest_class* greq_class);
 int PMPIX_Grequest_class_allocate (MPIX_Grequest_class greq_class, void* extra_state, MPI_Request* request);
 int PMPIX_Grequest_start (int function (void*, MPI_Status*) query_fn, int function (void*) free_fn, int function (void*, int) cancel_fn, int function (void*, MPI_Status*) poll_fn, int function (int, void**, double, MPI_Status*) wait_fn, void* extra_state, MPI_Request* request);
+
+/* RMA Mutexes Extensions */
 int PMPIX_Mutex_create (int count, MPI_Comm comm, MPIX_Mutex* hdl);
 int PMPIX_Mutex_free (MPIX_Mutex* hdl);
 int PMPIX_Mutex_lock (MPIX_Mutex hdl, int mutex, int proc);
 int PMPIX_Mutex_unlock (MPIX_Mutex hdl, int mutex, int proc);
+
